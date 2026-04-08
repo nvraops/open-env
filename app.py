@@ -13,7 +13,11 @@ from inference import get_action, load_data
 
 app = FastAPI(title="misinfo_env", version="1.0.0")
 
+import uvicorn
 
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=7860)
+    
 def _get_task_name() -> str:
     task_name = (os.getenv("TASK_NAME") or "easy").lower()
     return task_name if task_name in {"easy", "medium", "hard"} else "easy"
@@ -79,9 +83,11 @@ def schema():
     }
 
 
+# ✅ FIXED: added trailing slash routes + removed duplicate
 @app.post("/reset")
+@app.post("/reset/")
 @app.post("/openenv/reset")
-@app.get("/openenv/reset")
+@app.post("/openenv/reset/")
 def reset_env():
     observation = ENV.reset()
     return observation.model_dump()
@@ -92,7 +98,9 @@ def state_env():
     return ENV.state_info()
 
 
+# ✅ FIXED: added trailing slash routes
 @app.post("/step")
+@app.post("/step/")
 def step_env(action: Action):
     observation, reward, done, info = ENV.step(action)
     return {
@@ -103,7 +111,9 @@ def step_env(action: Action):
     }
 
 
+# ✅ FIXED: added trailing slash route
 @app.post("/openenv/step")
+@app.post("/openenv/step/")
 def step_inference(input_data: StepInput):
     action = get_action(
         observation=input_data.observation,
