@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "open-env-07-04-2026"
+version = "0.1.0"
+description = "An OpenEnv environment to detect misinformation in textual claims."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "nvraops" }
+]
+dependencies = [
+  "openai>=0.27.0",
+  "openenv-core>=0.2.0",
+  "pydantic>=2.1.1",
+  "requests",
+  "numpy",
+  "tqdm",
+  "fastapi",
+  "uvicorn",
+]
+
+[project.scripts]
+server = "server.app:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["env*", "graders*", "inference*", "rewards*", "server*", "tasks*"]

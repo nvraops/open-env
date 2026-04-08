@@ -1,0 +1,17 @@
+[
+  {
+    "claim": "5G technology spreads COVID-19.",
+    "context": "There is no scientific evidence linking 5G technology to virus transmission.",
+    "label": "FALSE"
+  },
+  {
+    "claim": "Eating sugar directly causes diabetes.",
+    "context": "Diabetes risk is influenced by multiple factors including genetics and lifestyle, not just sugar intake.",
+    "label": "MISLEADING"
+  },
+  {
+    "claim": "Global warming stopped in 1998.",
+    "context": "Temperature records show continued warming trends beyond 1998.",
+    "label": "FALSE"
+  }
+]

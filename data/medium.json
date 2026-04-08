@@ -1,0 +1,17 @@
+[
+  {
+    "claim": "Drinking coffee dehydrates the body.",
+    "context": "Caffeine has mild diuretic effects but normal coffee consumption does not cause dehydration.",
+    "label": "MISLEADING"
+  },
+  {
+    "claim": "All natural products are safe for consumption.",
+    "context": "Some natural substances can be toxic or harmful.",
+    "label": "FALSE"
+  },
+  {
+    "claim": "Climate change is only caused by natural cycles.",
+    "context": "Scientific studies show human activity significantly contributes to climate change.",
+    "label": "MISLEADING"
+  }
+]

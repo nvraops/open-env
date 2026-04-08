@@ -1,0 +1,31 @@
+name: misinfo_env
+version: 0.1.0
+author: "Your Name"
+license: MIT
+description: >
+  An OpenEnv environment to detect misinformation in textual claims.
+  Agents classify claims as TRUE, FALSE, or MISLEADING and provide reasoning.
+tasks:
+  - name: easy
+    description: "Simple factual claims, high confidence classification."
+    reward_range: [0.0, 1.0]
+  - name: medium
+    description: "Claims with nuances, partially misleading information."
+    reward_range: [0.0, 1.0]
+  - name: hard
+    description: "Complex misinformation and myths, requiring reasoning."
+    reward_range: [0.0, 1.0]
+observation_type: list[dict]
+action_type: dict
+reward_type: float
+interface:
+  reset: "Returns list of claims for the task."
+  step: "Takes Action object (label + reasoning), returns Reward object."
+  state: "Returns current task state."
+dependencies:
+  python: ">=3.10"
+  pip:
+    - openai
+    - openenv-core
+    - pydantic
+    - asyncio
