@@ -11,7 +11,7 @@ app = FastAPI()
 def home():
     return {"message": "API is running"}
 
-@app.post("/openenv/reset")
+@app.get("/openenv/reset")
 def reset_env():
     return {
         "status": "success",
