@@ -9,6 +9,9 @@ class BaseGrader(ABC):
     All task-specific graders must inherit from this
     """
 
+    def clamp_open_interval(self, value: float) -> float:
+        return min(0.999, max(0.001, value))
+
     @abstractmethod
     def grade(self, sample: Dict, action: Action) -> Reward:
         pass
@@ -16,15 +19,15 @@ class BaseGrader(ABC):
     # ✅ Utility: label scoring
     def score_label(self, true_label: str, predicted_label: Label) -> float:
         if true_label == predicted_label.value:
-            return 1.0
-        return 0.0
+            return 0.999
+        return 0.001
 
     # ✅ Utility: confidence calibration
     def score_confidence(self, confidence: float, correct: bool) -> float:
         if correct:
-            return confidence  # reward high confidence when correct
+            return self.clamp_open_interval(confidence)
         else:
-            return 1 - confidence  # penalize overconfidence
+            return self.clamp_open_interval(1 - confidence)
 
     # ✅ Utility: reasoning quality (basic heuristic)
     def score_reasoning(self, reasoning: str) -> float:
@@ -46,7 +49,7 @@ class BaseGrader(ABC):
         confidence_score: float,
         reasoning_score: float
     ) -> float:
-        return (
+        return self.clamp_open_interval(
             0.5 * label_score +
             0.3 * confidence_score +
             0.2 * reasoning_score

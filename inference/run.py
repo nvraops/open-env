@@ -40,6 +40,10 @@ MAX_STEPS = int(os.getenv("MAX_STEPS") or 5)
 SUCCESS_SCORE_THRESHOLD = float(os.getenv("SUCCESS_SCORE_THRESHOLD") or 0.1)
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 
+
+def clamp_open_interval(value: float) -> float:
+    return min(0.999, max(0.001, value))
+
 # -----------------------------
 # Load data & grader
 # -----------------------------
@@ -207,7 +211,8 @@ async def run_task(task_name: str, client, reward_engine):
             history.append(f"Step {step}: {action.label} -> reward {reward:.2f}")
             steps_taken = step
 
-        score = sum(rewards) / MAX_STEPS if MAX_STEPS > 0 else 0
+        raw_score = sum(rewards) / MAX_STEPS if MAX_STEPS > 0 else 0.001
+        score = clamp_open_interval(raw_score)
         success = score >= SUCCESS_SCORE_THRESHOLD
 
     except Exception as e:

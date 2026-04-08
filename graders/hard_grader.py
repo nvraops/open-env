@@ -47,7 +47,7 @@ class HardGrader(BaseGrader):
             true_label
         )
 
-        final_score = max(0.0, final_score - contradiction_penalty)
+        final_score = self.clamp_open_interval(final_score - contradiction_penalty)
 
         # ✅ Feedback
         if is_correct and contradiction_penalty == 0:

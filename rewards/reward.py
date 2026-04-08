@@ -10,6 +10,9 @@ class RewardEngine:
     def __init__(self):
         self.previous_scores: List[float] = []
 
+    def _clamp_open_interval(self, value: float) -> float:
+        return min(0.999, max(0.001, value))
+
     def reset(self):
         self.previous_scores = []
 
@@ -28,8 +31,8 @@ class RewardEngine:
         if self._is_improving(base_score):
             adjusted += 0.05
 
-        # ✅ Clamp to [0, 1]
-        adjusted = max(0.0, min(1.0, adjusted))
+        # ✅ Clamp to strict (0, 1)
+        adjusted = self._clamp_open_interval(adjusted)
 
         # Track scores
         self.previous_scores.append(adjusted)
