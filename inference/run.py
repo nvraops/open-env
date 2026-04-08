@@ -9,12 +9,16 @@ import sys
 # Allow imports from parent directory
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from openai import OpenAI
 try:
     from dotenv import load_dotenv
 except ImportError:
     def load_dotenv():
         return False
+
+try:
+    from openai import OpenAI
+except ImportError:
+    OpenAI = None
 
 from env.core import MisinfoEnv
 from env.models import Action
