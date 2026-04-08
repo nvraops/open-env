@@ -32,9 +32,9 @@ load_dotenv()
 # -----------------------------
 # Environment & model config
 # -----------------------------
-API_KEY = os.getenv("API_KEY") or os.getenv("OPENAI_API_KEY")
-API_BASE_URL = os.getenv("API_BASE_URL")
-MODEL_NAME = os.getenv("MODEL_NAME") or "gpt-4o-mini"
+API_BASE_URL = os.getenv("API_BASE_URL", "https://api.openai.com/v1")
+MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4.1-mini")
+HF_TOKEN = os.getenv("HF_TOKEN")
 TASK_NAME = os.getenv("TASK_NAME") or "all"
 MAX_STEPS = int(os.getenv("MAX_STEPS") or 5)
 SUCCESS_SCORE_THRESHOLD = float(os.getenv("SUCCESS_SCORE_THRESHOLD") or 0.1)
@@ -227,9 +227,9 @@ async def run_task(task_name: str, client, reward_engine):
 async def main():
     if OpenAI is None:
         raise RuntimeError("openai package is required for inference execution")
-    api_key = os.environ["API_KEY"]
-    api_base_url = os.environ["API_BASE_URL"]
-    client = OpenAI(api_key=api_key, base_url=api_base_url)
+    if HF_TOKEN is None:
+        raise ValueError("HF_TOKEN environment variable is required")
+    client = OpenAI(api_key=HF_TOKEN, base_url=API_BASE_URL)
     reward_engine = RewardEngine()
 
     tasks_to_run = ["easy", "medium", "hard"]
