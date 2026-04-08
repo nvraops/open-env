@@ -15,7 +15,7 @@ class EasyGrader(BaseGrader):
 
         # ✅ Label correctness
         label_score = self.score_label(true_label, action.label)
-        is_correct = label_score == 1.0
+        is_correct = true_label == action.label.value
 
         # ✅ Confidence scoring
         confidence_score = self.score_confidence(

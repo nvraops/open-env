@@ -72,10 +72,10 @@ def log_start(task: str, env_name: str, model: str):
 def log_step(step: int, action: str, reward: float, done: bool, error: Optional[str]):
     error_val = error if error else "null"
     done_val = str(done).lower()
-    print(f"[STEP] step={step} action={action} reward={reward:.2f} done={done_val} error={error_val}", flush=True)
+    print(f"[STEP] step={step} action={action} reward={reward:.3f} done={done_val} error={error_val}", flush=True)
 
 def log_end(task: str, success: bool, steps: int, score: float, rewards: List[float]):
-    rewards_str = ",".join(f"{r:.2f}" for r in rewards)
+    rewards_str = ",".join(f"{r:.3f}" for r in rewards)
     print(
         f"[END] task={task} success={str(success).lower()} steps={steps} score={score:.3f} rewards={rewards_str}",
         flush=True,
@@ -167,7 +167,7 @@ def get_action(observation: Any, reward: float, done: bool, info: Dict[str, Any]
     history = []
 
     prompt = build_prompt(step=0, last_claim=last_claim, last_feedback=last_feedback, history=history)
-    client = OpenAI(api_key=API_KEY, base_url=API_BASE_URL) if (OpenAI and API_KEY and API_BASE_URL) else None
+    client = OpenAI(api_key=HF_TOKEN, base_url=API_BASE_URL) if (OpenAI and HF_TOKEN and API_BASE_URL) else None
     response = get_model_response(client, prompt)
     return response.get("label", "MISLEADING")
 
@@ -208,7 +208,7 @@ async def run_task(task_name: str, client, reward_engine):
             log_step(step, action.label, reward, done, None)
 
             rewards.append(reward)
-            history.append(f"Step {step}: {action.label} -> reward {reward:.2f}")
+            history.append(f"Step {step}: {action.label} -> reward {reward:.3f}")
             steps_taken = step
 
         raw_score = sum(rewards) / MAX_STEPS if MAX_STEPS > 0 else 0.001

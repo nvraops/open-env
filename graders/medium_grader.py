@@ -17,7 +17,7 @@ class MediumGrader(BaseGrader):
 
         # ✅ Label scoring
         label_score = self.score_label(true_label, action.label)
-        is_correct = label_score == 1.0
+        is_correct = true_label == action.label.value
 
         # ✅ Confidence scoring
         confidence_score = self.score_confidence(
@@ -62,7 +62,7 @@ class MediumGrader(BaseGrader):
         overlap = context_words.intersection(reasoning_words)
 
         if len(overlap) > 5:
-            return 1.0
+            return 0.999
         elif len(overlap) > 2:
             return 0.7
         elif len(overlap) > 0:

@@ -18,7 +18,7 @@ class HardGrader(BaseGrader):
 
         # ✅ Label scoring
         label_score = self.score_label(true_label, action.label)
-        is_correct = label_score == 1.0
+        is_correct = true_label == action.label.value
 
         # ✅ Confidence scoring
         confidence_score = self.score_confidence(
@@ -91,7 +91,7 @@ class HardGrader(BaseGrader):
 
         # Combine signals
         if overlap > 5 and logic_score >= 2:
-            return 1.0
+            return 0.999
         elif overlap > 3:
             return 0.7
         elif overlap > 1:
