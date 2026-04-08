@@ -73,9 +73,12 @@ def log_step(step: int, action: str, reward: float, done: bool, error: Optional[
     done_val = str(done).lower()
     print(f"[STEP] step={step} action={action} reward={reward:.2f} done={done_val} error={error_val}", flush=True)
 
-def log_end(success: bool, steps: int, score: float, rewards: List[float]):
+def log_end(task: str, success: bool, steps: int, score: float, rewards: List[float]):
     rewards_str = ",".join(f"{r:.2f}" for r in rewards)
-    print(f"[END] success={str(success).lower()} steps={steps} score={score:.3f} rewards={rewards_str}", flush=True)
+    print(
+        f"[END] task={task} success={str(success).lower()} steps={steps} score={score:.3f} rewards={rewards_str}",
+        flush=True,
+    )
 
 # -----------------------------
 # Prompt builder
@@ -139,7 +142,7 @@ async def run_task(task_name: str, client, reward_engine):
     score = 0.0
     success = False
 
-    log_start(task=f"misinfo-detection-{task_name}", env_name="misinfo_env", model=MODEL_NAME)
+    log_start(task=task_name, env_name="misinfo_env", model=MODEL_NAME)
 
     try:
         observation = env.reset()
@@ -172,7 +175,7 @@ async def run_task(task_name: str, client, reward_engine):
         print("ERROR:", str(e))
 
     finally:
-        log_end(success, steps_taken, score, rewards)
+        log_end(task_name, success, steps_taken, score, rewards)
         result = {
             "task": task_name,
             "status": "success" if success else "failed",
