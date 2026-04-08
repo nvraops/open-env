@@ -32,7 +32,7 @@ load_dotenv()
 # -----------------------------
 # Environment & model config
 # -----------------------------
-API_KEY = os.getenv("OPENAI_API_KEY") 
+API_KEY = os.getenv("API_KEY") or os.getenv("OPENAI_API_KEY")
 API_BASE_URL = os.getenv("API_BASE_URL")
 MODEL_NAME = os.getenv("MODEL_NAME") or "gpt-4o-mini"
 TASK_NAME = os.getenv("TASK_NAME") or "all"
@@ -95,22 +95,63 @@ Provide your label and reasoning for the next claim.
 """.strip()
 
 # -----------------------------
-# Mock model response
+# Model response
 # -----------------------------
-def get_model_response(client, prompt: str):
-    # Fallback logic
+def _fallback_response(prompt: str):
     if "not" in prompt.lower():
         return {
             "label": "MISLEADING",
             "confidence": 0.7,
-            "reasoning": "Detected negative claim pattern"
+            "reasoning": "Detected negative claim pattern",
         }
-    else:
+    return {
+        "label": "TRUE",
+        "confidence": 0.7,
+        "reasoning": "Seems factual",
+    }
+
+
+def get_model_response(client, prompt: str):
+    if client is None:
+        return _fallback_response(prompt)
+
+    system_prompt = (
+        "You classify misinformation claims. "
+        "Reply with strict JSON containing label, confidence, and reasoning. "
+        "label must be one of TRUE, FALSE, MISLEADING."
+    )
+
+    try:
+        response = client.chat.completions.create(
+            model=MODEL_NAME,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": prompt},
+            ],
+            response_format={"type": "json_object"},
+            temperature=0,
+        )
+        content = response.choices[0].message.content or "{}"
+        parsed = json.loads(content)
+        label = str(parsed.get("label", "MISLEADING")).upper()
+        if label not in {"TRUE", "FALSE", "MISLEADING"}:
+            label = "MISLEADING"
+        confidence = parsed.get("confidence", 0.5)
+        try:
+            confidence = float(confidence)
+        except (TypeError, ValueError):
+            confidence = 0.5
+        confidence = min(max(confidence, 0.0), 1.0)
+        reasoning = str(parsed.get("reasoning", "No reasoning provided"))
+        if len(reasoning) < 5:
+            reasoning = "Model reasoning unavailable"
         return {
-            "label": "TRUE",
-            "confidence": 0.7,
-            "reasoning": "Seems factual"
+            "label": label,
+            "confidence": confidence,
+            "reasoning": reasoning,
         }
+    except Exception:
+        return _fallback_response(prompt)
 
 # -----------------------------
 # Wrapper for FastAPI
@@ -125,7 +166,8 @@ def get_action(observation: Any, reward: float, done: bool, info: Dict[str, Any]
     history = []
 
     prompt = build_prompt(step=0, last_claim=last_claim, last_feedback=last_feedback, history=history)
-    response = get_model_response(None, prompt)
+    client = OpenAI(api_key=API_KEY, base_url=API_BASE_URL) if (OpenAI and API_KEY and API_BASE_URL) else None
+    response = get_model_response(client, prompt)
     return response.get("label", "MISLEADING")
 
 # -----------------------------
@@ -186,7 +228,7 @@ async def run_task(task_name: str, client, reward_engine):
         print()  # newline
 
 async def main():
-    client = OpenAI(api_key=API_KEY, base_url=API_BASE_URL) if API_KEY else None
+    client = OpenAI(api_key=API_KEY, base_url=API_BASE_URL) if (OpenAI and API_KEY and API_BASE_URL) else None
     if not API_KEY:
         warn_no_api_key()
     reward_engine = RewardEngine()
