@@ -59,9 +59,6 @@ def get_grader(task_name: str):
         return HardGrader()
     raise ValueError(f"Unknown task grader: {task_name}")
 
-def warn_no_api_key():
-    print("[WARN] No API key found. Using fallback responses.", flush=True)
-
 # -----------------------------
 # Logging helpers
 # -----------------------------
@@ -113,7 +110,7 @@ def _fallback_response(prompt: str):
 
 def get_model_response(client, prompt: str):
     if client is None:
-        return _fallback_response(prompt)
+        raise RuntimeError("OpenAI client is not configured")
 
     system_prompt = (
         "You classify misinformation claims. "
@@ -150,8 +147,8 @@ def get_model_response(client, prompt: str):
             "confidence": confidence,
             "reasoning": reasoning,
         }
-    except Exception:
-        return _fallback_response(prompt)
+    except Exception as exc:
+        raise RuntimeError(f"LLM proxy call failed: {exc}") from exc
 
 # -----------------------------
 # Wrapper for FastAPI
@@ -228,9 +225,11 @@ async def run_task(task_name: str, client, reward_engine):
         print()  # newline
 
 async def main():
-    client = OpenAI(api_key=API_KEY, base_url=API_BASE_URL) if (OpenAI and API_KEY and API_BASE_URL) else None
-    if not API_KEY:
-        warn_no_api_key()
+    if OpenAI is None:
+        raise RuntimeError("openai package is required for inference execution")
+    api_key = os.environ["API_KEY"]
+    api_base_url = os.environ["API_BASE_URL"]
+    client = OpenAI(api_key=api_key, base_url=api_base_url)
     reward_engine = RewardEngine()
 
     tasks_to_run = ["easy", "medium", "hard"]
