@@ -9,7 +9,7 @@ from env.models import Action
 from graders.easy_grader import EasyGrader
 from graders.hard_grader import HardGrader
 from graders.medium_grader import MediumGrader
-from inference.run import get_action, load_data
+from inference import get_action, load_data
 
 app = FastAPI(title="misinfo_env", version="1.0.0")
 
