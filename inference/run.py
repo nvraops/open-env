@@ -246,7 +246,7 @@ async def run_task(task_name: str, client, reward_engine):
     history: List[str] = []
     rewards: List[float] = []
     steps_taken = 0
-    score = 0.0
+    score = 0.001
     success = False
     last_feedback = ""
     available_steps = min(MAX_STEPS, len(data))

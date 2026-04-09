@@ -32,7 +32,7 @@ class EasyTask:
         return EasyTaskObservation(statements=self.statements)
 
     def step(self, action: EasyTaskAction):
-        reward = 0.0
+        reward = 0.001
         for idx in action.selected_statements:
             if idx in self.misinformation_indices:
                 reward += 0.5  # partial credit

@@ -28,7 +28,7 @@ class HardTask:
         return HardTaskObservation(article=self.article, statements=self.statements)
 
     def step(self, action: HardTaskAction):
-        reward = 0.0
+        reward = 0.001
         for idx, cls in enumerate(action.classifications):
             if idx in self.misinformation_indices and cls == 1:
                 reward += 0.33

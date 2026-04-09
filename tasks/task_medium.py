@@ -28,7 +28,7 @@ class MediumTask:
         return MediumTaskObservation(statements=self.statements)
 
     def step(self, action: MediumTaskAction):
-        reward = 0.0
+        reward = 0.001
         for a, c in zip(action.explanations, self.correct_explanations):
             if c.lower() in a.lower():
                 reward += 0.5
