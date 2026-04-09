@@ -6,7 +6,7 @@ def clamp_open_score(value: float) -> float:
     return min(MAX_OPEN_SCORE, max(MIN_OPEN_SCORE, float(value)))
 
 
-def finalize_open_score(value: float, digits: int = 3) -> float:
+def finalize_open_score(value: float, digits: int = 4) -> float:
     rounded = round(float(value), digits)
     return clamp_open_score(rounded)
 

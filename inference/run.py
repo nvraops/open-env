@@ -53,7 +53,7 @@ def finalize_public_score(value: float) -> float:
 
 
 def format_open_interval_2dp(value: float) -> str:
-    display_value = min(0.99, max(0.01, round(clamp_open_interval(value), 2)))
+    display_value = min(0.99, max(0.01, round(clamp_open_interval(value), 4)))
     return f"{display_value:.2f}"
 
 
@@ -268,7 +268,10 @@ async def run_task(task_name: str, client, reward_engine):
             )
 
             observation, reward_value, done, info = env.step(action)
-            reward = reward_engine.adjust_reward(reward_value, history)
+            safe_base_reward = reward_value if reward_value is not None else 0.001
+            safe_base_reward = finalize_public_score(safe_base_reward)
+            reward = reward_engine.adjust_reward(safe_base_reward, history)
+            reward = finalize_public_score(reward)
             done = done or (step >= MAX_STEPS)
             last_feedback = str(info.get("feedback", "")) if isinstance(info, dict) else ""
 
@@ -287,11 +290,12 @@ async def run_task(task_name: str, client, reward_engine):
         print("ERROR:", str(e))
 
     finally:
+        score = finalize_public_score(score)
         log_end(success, steps_taken, score, rewards)
         result = {
             "task": task_name,
             "status": "success" if success else "failed",
-            "score": finalize_public_score(score),
+            "score": score,
             "steps": steps_taken
         }
         if EMIT_JSON_RESULT:
