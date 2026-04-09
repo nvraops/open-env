@@ -318,4 +318,7 @@ async def main():
         await run_task(task_name, client, reward_engine)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\n[INFO] Inference stopped by user.", flush=True)

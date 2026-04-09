@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from env.core import MisinfoEnv
 from env.models import Action, Observation
+from env.reward_policy import MAX_OPEN_SCORE, MIN_OPEN_SCORE
 from graders.easy_grader import EasyGrader
 from graders.hard_grader import HardGrader
 from graders.medium_grader import MediumGrader
@@ -33,7 +34,7 @@ ENV = MisinfoEnv(load_data(TASK_NAME), _get_grader(TASK_NAME))
 
 class StepInput(BaseModel):
     observation: Any = None
-    reward: float = 0.0
+    reward: float = MIN_OPEN_SCORE
     done: bool = False
     info: Dict[str, Any] = Field(default_factory=dict)
 
@@ -55,7 +56,10 @@ def metadata():
         "description": "OpenEnv environment for misinformation detection with strict open-interval rewards.",
         "task": TASK_NAME,
         "labels": ["TRUE", "FALSE", "MISLEADING"],
-        "score_range": {"min": 0.001, "max": 0.999, "min_exclusive": 0.0, "max_exclusive": 1.0},
+        "score_range": {
+            "min": MIN_OPEN_SCORE,
+            "max": MAX_OPEN_SCORE,
+        },
     }
 
 
