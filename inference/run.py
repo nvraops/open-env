@@ -22,7 +22,10 @@ except ImportError:
 
 from env.core import MisinfoEnv
 from env.models import Action
+<<<<<<< HEAD
 from env.reward_policy import clamp_open_score, finalize_open_score
+=======
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
 from graders.easy_grader import EasyGrader
 from graders.medium_grader import MediumGrader
 from graders.hard_grader import HardGrader
@@ -35,12 +38,16 @@ load_dotenv()
 # -----------------------------
 API_BASE_URL = os.getenv("API_BASE_URL", "https://api.openai.com/v1")
 MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4.1-mini")
+<<<<<<< HEAD
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+=======
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
 HF_TOKEN = os.getenv("HF_TOKEN")
 TASK_NAME = os.getenv("TASK_NAME") or "all"
 MAX_STEPS = int(os.getenv("MAX_STEPS") or 5)
 SUCCESS_SCORE_THRESHOLD = float(os.getenv("SUCCESS_SCORE_THRESHOLD") or 0.1)
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
+<<<<<<< HEAD
 EMIT_JSON_RESULT = (os.getenv("EMIT_JSON_RESULT") or "0").lower() in {"1", "true", "yes"}
 
 
@@ -94,6 +101,12 @@ def _normalize_model_name(model_name: str, provider: str) -> str:
     if provider == "openai" and model_name.startswith("openai/"):
         return model_name.split("/", 1)[1]
     return model_name
+=======
+
+
+def clamp_open_interval(value: float) -> float:
+    return min(0.999, max(0.001, value))
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
 
 # -----------------------------
 # Load data & grader
@@ -123,6 +136,7 @@ def log_start(task: str, env_name: str, model: str):
 def log_step(step: int, action: str, reward: float, done: bool, error: Optional[str]):
     error_val = error if error else "null"
     done_val = str(done).lower()
+<<<<<<< HEAD
     print(
         f"[STEP] step={step} action={action} reward={format_open_interval_2dp(reward)} "
         f"done={done_val} error={error_val}",
@@ -133,6 +147,14 @@ def log_end(success: bool, steps: int, score: float, rewards: List[float]):
     rewards_str = ",".join(format_open_interval_2dp(r) for r in rewards)
     print(
         f"[END] success={str(success).lower()} steps={steps} score={score:.3f} rewards={rewards_str}",
+=======
+    print(f"[STEP] step={step} action={action} reward={reward:.3f} done={done_val} error={error_val}", flush=True)
+
+def log_end(task: str, success: bool, steps: int, score: float, rewards: List[float]):
+    rewards_str = ",".join(f"{r:.3f}" for r in rewards)
+    print(
+        f"[END] task={task} success={str(success).lower()} steps={steps} score={score:.3f} rewards={rewards_str}",
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
         flush=True,
     )
 
@@ -169,7 +191,11 @@ def _fallback_response(prompt: str):
 
 def get_model_response(client, prompt: str):
     if client is None:
+<<<<<<< HEAD
         return _fallback_response(prompt)
+=======
+        raise RuntimeError("OpenAI client is not configured")
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
 
     system_prompt = (
         "You classify misinformation claims. "
@@ -206,8 +232,13 @@ def get_model_response(client, prompt: str):
             "confidence": confidence,
             "reasoning": reasoning,
         }
+<<<<<<< HEAD
     except Exception:
         return _fallback_response(prompt)
+=======
+    except Exception as exc:
+        raise RuntimeError(f"LLM proxy call failed: {exc}") from exc
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
 
 # -----------------------------
 # Wrapper for FastAPI
@@ -218,6 +249,7 @@ def get_action(observation: Any, reward: float, done: bool, info: Dict[str, Any]
     Can be called by /openenv/step endpoint.
     """
     last_claim = getattr(observation, "claim", "") if observation else ""
+<<<<<<< HEAD
     last_feedback = str(info.get("feedback", "")) if isinstance(info, dict) else ""
     history = []
 
@@ -232,6 +264,14 @@ def get_action(observation: Any, reward: float, done: bool, info: Dict[str, Any]
         response = get_model_response(client, prompt)
     finally:
         globals()["MODEL_NAME"] = original_model_name
+=======
+    last_feedback = ""
+    history = []
+
+    prompt = build_prompt(step=0, last_claim=last_claim, last_feedback=last_feedback, history=history)
+    client = OpenAI(api_key=HF_TOKEN, base_url=API_BASE_URL) if (OpenAI and HF_TOKEN and API_BASE_URL) else None
+    response = get_model_response(client, prompt)
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
     return response.get("label", "MISLEADING")
 
 # -----------------------------
@@ -241,15 +281,23 @@ async def run_task(task_name: str, client, reward_engine):
     data = load_data(task_name)
     grader = get_grader(task_name)
     env = MisinfoEnv(data, grader)
+<<<<<<< HEAD
     reward_engine.reset()
+=======
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
 
     history: List[str] = []
     rewards: List[float] = []
     steps_taken = 0
+<<<<<<< HEAD
     score = 0.001
     success = False
     last_feedback = ""
     available_steps = min(MAX_STEPS, len(data))
+=======
+    score = 0.0
+    success = False
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
 
     log_start(task=task_name, env_name="misinfo_env", model=MODEL_NAME)
 
@@ -258,7 +306,11 @@ async def run_task(task_name: str, client, reward_engine):
 
         while not env.state.is_done() and steps_taken < MAX_STEPS:
             step = steps_taken + 1
+<<<<<<< HEAD
             prompt = build_prompt(step, observation.claim, last_feedback, history)
+=======
+            prompt = build_prompt(step, observation.claim, "", history)
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
             response = get_model_response(client, prompt)
 
             action = Action(
@@ -268,12 +320,17 @@ async def run_task(task_name: str, client, reward_engine):
             )
 
             observation, reward_value, done, info = env.step(action)
+<<<<<<< HEAD
             safe_base_reward = reward_value if reward_value is not None else 0.001
             safe_base_reward = finalize_public_score(safe_base_reward)
             reward = reward_engine.adjust_reward(safe_base_reward, history)
             reward = finalize_public_score(reward)
             done = done or (step >= MAX_STEPS)
             last_feedback = str(info.get("feedback", "")) if isinstance(info, dict) else ""
+=======
+            reward = reward_engine.adjust_reward(reward_value, history)
+            done = done or (step >= MAX_STEPS)
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
 
             log_step(step, action.label, reward, done, None)
 
@@ -281,6 +338,7 @@ async def run_task(task_name: str, client, reward_engine):
             history.append(f"Step {step}: {action.label} -> reward {reward:.3f}")
             steps_taken = step
 
+<<<<<<< HEAD
         raw_score = sum(rewards) / available_steps if available_steps > 0 else 0.001
         score = finalize_public_score(raw_score)
         success = score >= SUCCESS_SCORE_THRESHOLD
@@ -292,12 +350,24 @@ async def run_task(task_name: str, client, reward_engine):
     finally:
         score = finalize_public_score(score)
         log_end(success, steps_taken, score, rewards)
+=======
+        raw_score = sum(rewards) / MAX_STEPS if MAX_STEPS > 0 else 0.001
+        score = clamp_open_interval(raw_score)
+        success = score >= SUCCESS_SCORE_THRESHOLD
+
+    except Exception as e:
+        print("ERROR:", str(e))
+
+    finally:
+        log_end(task_name, success, steps_taken, score, rewards)
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
         result = {
             "task": task_name,
             "status": "success" if success else "failed",
             "score": score,
             "steps": steps_taken
         }
+<<<<<<< HEAD
         if EMIT_JSON_RESULT:
             print(json.dumps(result))
         print()  # newline
@@ -312,6 +382,17 @@ async def main():
     if api_key is None:
         raise ValueError("Missing API key for configured API_BASE_URL")
     client = OpenAI(api_key=api_key, base_url=API_BASE_URL)
+=======
+        print(json.dumps(result))
+        print()  # newline
+
+async def main():
+    if OpenAI is None:
+        raise RuntimeError("openai package is required for inference execution")
+    if HF_TOKEN is None:
+        raise ValueError("HF_TOKEN environment variable is required")
+    client = OpenAI(api_key=HF_TOKEN, base_url=API_BASE_URL)
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
     reward_engine = RewardEngine()
 
     tasks_to_run = ["easy", "medium", "hard"]
@@ -322,7 +403,11 @@ async def main():
         await run_task(task_name, client, reward_engine)
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
         print("\n[INFO] Inference stopped by user.", flush=True)
+=======
+    asyncio.run(main())
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc

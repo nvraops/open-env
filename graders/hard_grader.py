@@ -60,10 +60,15 @@ class HardGrader(BaseGrader):
                 f"Improve reasoning depth."
             )
 
+<<<<<<< HEAD
         final_score = self.scale_score_to_band(final_score, 0.55, 0.95)
 
         return Reward(
             score=final_score,
+=======
+        return Reward(
+            score=round(final_score, 3),
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
             feedback=feedback
         )
 

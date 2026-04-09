@@ -39,9 +39,14 @@ class EasyGrader(BaseGrader):
         else:
             feedback = f"Incorrect. Expected {true_label}, got {action.label.value}."
 
+<<<<<<< HEAD
         final_score = self.scale_score_to_band(final_score, 0.10, 0.55)
 
         return Reward(
             score=final_score,
+=======
+        return Reward(
+            score=round(final_score, 3),
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
             feedback=feedback
         )

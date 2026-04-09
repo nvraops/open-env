@@ -13,7 +13,11 @@ authors = [
   { name = "nvraops" }
 ]
 dependencies = [
+<<<<<<< HEAD
   "openai>=1.0.0",
+=======
+  "openai>=0.27.0",
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
   "openenv-core>=0.2.0",
   "pydantic>=2.1.1",
   "python-dotenv",
@@ -30,4 +34,8 @@ server = "server.app:main"
 include-package-data = true
 
 [tool.setuptools.packages.find]
+<<<<<<< HEAD
 include = ["env*", "graders*", "inference*", "rewards*", "server*", "tasks*"]
+=======
+include = ["env*", "graders*", "inference*", "openai*", "rewards*", "server*", "tasks*"]
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc

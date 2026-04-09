@@ -1,5 +1,6 @@
 name: misinfo_env
 version: 0.1.0
+<<<<<<< HEAD
 author: "nvraops"
 license: MIT
 description: >
@@ -23,12 +24,40 @@ interface:
   reset: "Returns the first claim, context, and empty history for the active task."
   step: "Takes an Action with label, confidence, and reasoning, then returns observation, reward, done, and feedback."
   state: "Returns current index, done status, and interaction history."
+=======
+author: "Your Name"
+license: MIT
+description: >
+  An OpenEnv environment to detect misinformation in textual claims.
+  Agents classify claims as TRUE, FALSE, or MISLEADING and provide reasoning.
+tasks:
+  - name: easy
+    description: "Simple factual claims, high confidence classification."
+    reward_range: [0.0, 1.0]
+  - name: medium
+    description: "Claims with nuances, partially misleading information."
+    reward_range: [0.0, 1.0]
+  - name: hard
+    description: "Complex misinformation and myths, requiring reasoning."
+    reward_range: [0.0, 1.0]
+observation_type: list[dict]
+action_type: dict
+reward_type: float
+interface:
+  reset: "Returns list of claims for the task."
+  step: "Takes Action object (label + reasoning), returns Reward object."
+  state: "Returns current task state."
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
 dependencies:
   python: ">=3.10"
   pip:
     - openai
     - openenv-core
     - pydantic
+<<<<<<< HEAD
     - python-dotenv
     - fastapi
     - uvicorn
+=======
+    - asyncio
+>>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
