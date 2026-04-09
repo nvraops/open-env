@@ -1,0 +1,34 @@
+name: misinfo_env
+version: 0.1.0
+author: "nvraops"
+license: MIT
+description: >
+  An OpenEnv environment for misinformation classification across easy,
+  medium, and hard tasks. Agents classify claims as TRUE, FALSE, or
+  MISLEADING, provide reasoning, and return scores strictly inside (0, 1).
+tasks:
+  - name: easy
+    description: "Simple factual claims with clear TRUE/FALSE labels."
+    reward_range: [0.0, 1.0]
+  - name: medium
+    description: "Nuanced claims requiring context-sensitive MISLEADING detection."
+    reward_range: [0.0, 1.0]
+  - name: hard
+    description: "Complex misinformation cases with contradiction-aware reasoning."
+    reward_range: [0.0, 1.0]
+observation_type: object
+action_type: dict
+reward_type: float
+interface:
+  reset: "Returns the first claim, context, and empty history for the active task."
+  step: "Takes an Action with label, confidence, and reasoning, then returns observation, reward, done, and feedback."
+  state: "Returns current index, done status, and interaction history."
+dependencies:
+  python: ">=3.10"
+  pip:
+    - openai
+    - openenv-core
+    - pydantic
+    - python-dotenv
+    - fastapi
+    - uvicorn

@@ -1,0 +1,17 @@
+[
+  {
+    "claim": "The Earth revolves around the Sun.",
+    "context": "Scientific consensus confirms heliocentrism.",
+    "label": "TRUE"
+  },
+  {
+    "claim": "Humans can breathe in space without equipment.",
+    "context": "Space lacks oxygen required for human survival.",
+    "label": "FALSE"
+  },
+  {
+    "claim": "Vaccines cause autism.",
+    "context": "Extensive research shows no link between vaccines and autism.",
+    "label": "FALSE"
+  }
+]
