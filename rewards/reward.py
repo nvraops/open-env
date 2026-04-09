@@ -1,8 +1,5 @@
 from typing import List
-<<<<<<< HEAD
 from env.reward_policy import clamp_open_score, finalize_open_score
-=======
->>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
 
 
 class RewardEngine:
@@ -15,11 +12,7 @@ class RewardEngine:
         self.previous_scores: List[float] = []
 
     def _clamp_open_interval(self, value: float) -> float:
-<<<<<<< HEAD
         return clamp_open_score(value)
-=======
-        return min(0.999, max(0.001, value))
->>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
 
     def reset(self):
         self.previous_scores = []
@@ -45,11 +38,7 @@ class RewardEngine:
         # Track scores
         self.previous_scores.append(adjusted)
 
-<<<<<<< HEAD
         return finalize_open_score(adjusted)
-=======
-        return round(adjusted, 3)
->>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
 
     def _is_repetitive(self, history: List[str]) -> bool:
         """

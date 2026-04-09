@@ -1,9 +1,6 @@
 from typing import Tuple, Dict, Any
 from env.models import Observation, Action, Reward
-<<<<<<< HEAD
 from env.reward_policy import finalize_open_score
-=======
->>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
 from env.state import EnvState
 
 
@@ -37,10 +34,7 @@ class MisinfoEnv:
 
         # ✅ Grade the action
         reward_obj: Reward = self.grader.grade(sample, action)
-<<<<<<< HEAD
         safe_reward = finalize_open_score(reward_obj.score)
-=======
->>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
 
         # ✅ Store history
         self.state.add_history(
@@ -61,11 +55,7 @@ class MisinfoEnv:
             history=self.state.history
         )
 
-<<<<<<< HEAD
         return observation, safe_reward, done, {
-=======
-        return observation, reward_obj.score, done, {
->>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
             "feedback": reward_obj.feedback
         }
 
@@ -77,8 +67,4 @@ class MisinfoEnv:
             "current_index": self.state.current_index,
             "done": self.state.done,
             "history": self.state.history
-<<<<<<< HEAD
         }
-=======
-        }
->>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc

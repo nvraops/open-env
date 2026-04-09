@@ -7,7 +7,6 @@ sdk: docker
 pinned: false
 ---
 
-<<<<<<< HEAD
 # Misinfo OpenEnv
 
 An OpenEnv environment for misinformation classification across `easy`, `medium`, and `hard` tasks.
@@ -90,6 +89,3 @@ The important requirement for submission is:
 ```
 
 This repository now enforces that rule across graders, task rewards, shaped rewards, and final inference scores.
-=======
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
->>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc

@@ -1,10 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from enum import Enum
-<<<<<<< HEAD
 from env.reward_policy import MAX_OPEN_SCORE, MIN_OPEN_SCORE
-=======
->>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
 
 
 # ✅ Strict label control (VERY IMPORTANT for grading)
@@ -36,10 +33,5 @@ class Reward(BaseModel):
     """
     Feedback from environment
     """
-<<<<<<< HEAD
     score: float = Field(..., gt=0.0, lt=1.0, ge=MIN_OPEN_SCORE, le=MAX_OPEN_SCORE)
     feedback: str
-=======
-    score: float = Field(..., ge=0.0, le=1.0)
-    feedback: str
->>>>>>> b8610d1af8aceffc20032bfb7d83086f6cf268dc
