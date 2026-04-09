@@ -9,13 +9,13 @@ description: >
 tasks:
   - name: easy
     description: "Simple factual claims with clear TRUE/FALSE labels."
-    reward_range: [0.0, 1.0]
+    reward_range: [0.001, 0.999]
   - name: medium
     description: "Nuanced claims requiring context-sensitive MISLEADING detection."
-    reward_range: [0.0, 1.0]
+    reward_range: [0.001, 0.999]
   - name: hard
     description: "Complex misinformation cases with contradiction-aware reasoning."
-    reward_range: [0.0, 1.0]
+    reward_range: [0.001, 0.999]
 observation_type: object
 action_type: dict
 reward_type: float

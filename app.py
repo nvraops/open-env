@@ -55,7 +55,7 @@ def metadata():
         "description": "OpenEnv environment for misinformation detection with strict open-interval rewards.",
         "task": TASK_NAME,
         "labels": ["TRUE", "FALSE", "MISLEADING"],
-        "score_range": {"min_exclusive": 0.0, "max_exclusive": 1.0},
+        "score_range": {"min": 0.001, "max": 0.999, "min_exclusive": 0.0, "max_exclusive": 1.0},
     }
 
 
